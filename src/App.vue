@@ -3,6 +3,11 @@
 <template>
   <header>
     <nav>
+      <ul>
+        <li><router-link to="/">Главная</router-link></li>
+        <li><router-link to="/categories">Категории</router-link></li>
+        <li><router-link to="/items">Объявления</router-link></li>
+      </ul>
       <div v-if="isAuthenticated && user">
         <p>Welcome, {{ user.name }}</p>
         <button @click="logout">Logout</button>
@@ -23,6 +28,7 @@
       </div>
     </nav>
   </header>
+  <router-view />
 </template>
 
 <script>
