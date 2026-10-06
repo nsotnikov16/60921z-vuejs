@@ -1,44 +1,79 @@
-<script setup></script>
+<script setup>
+import Button from "primevue/button";
+import Menubar from "primevue/menubar";
+import InputText from "primevue/inputtext";
+</script>
 
 <template>
-  <header>
-    <nav>
-      <ul>
-        <li><router-link to="/">Главная</router-link></li>
-        <li><router-link to="/categories">Категории</router-link></li>
-        <li><router-link to="/items">Объявления</router-link></li>
-      </ul>
-      <div v-if="isAuthenticated && user">
-        <p>Welcome, {{ user.name }}</p>
-        <button @click="logout">Logout</button>
-      </div>
-      <div v-else>
-        <form @submit.prevent="login">
-          <div>
-            <label for="email">Email:</label>
-            <input v-model="email" type="email" name="email" id="email" required>
+  <div class="m-2">
+    <Menubar :model="items">
+      <template #start>
+        <span>
+          <img src="@/assets/SurSU-2.png" width="50" alt="My SVG Icon" />
+        </span>
+      </template>
+      <template #item="{ item }">
+        <div class="flex items-center ml-6 p-4">
+          <router-link v-if="item.route" :to="item.route">
+            <span :class="item.icon"></span>
+            <span class="ml-1">{{ item.label }}</span>
+          </router-link>
+        </div>
+      </template>
+      <template #end>
+        <div class="flex items-center gap-2">
+          <div v-if="isAuthenticated && user">
+            <span class="pi pi-fw pi-user mr-4">{{ user.name }}</span>
+            <Button @click="logout" class="ml-4">Выйти</Button>
           </div>
-          <div>
-            <label for="password">Password:</label>
-            <input v-model="password" type="password" name="password" id="password" required>
+          <div v-else>
+            <form @submit.prevent="login">
+              <InputText v-model="email" type="email" id="email" required placeholder="Email" class="m-2 sm:w-auto"
+                :class="{ 'p-invalid': authError }" />
+              <InputText v-model="password" type="password" id="password" required placeholder="Пароль"
+                class="m-2 sm:w-auto" :class="{ 'p-invalid': authError }" />
+              <Button type="submit">Войти</Button>
+              <div class="ml-2"><small v-if="authError" class="error">{{ authError }}</small></div>
+            </form>
           </div>
-          <button type="submit">Login</button>
-          <p v-if="authError" class="error">{{ authError }}</p>
-        </form>
-      </div>
-    </nav>
-  </header>
-  <router-view />
+        </div>
+      </template>
+    </Menubar>
+    <router-view />
+  </div>
 </template>
 
 <script>
 import { useAuthStore } from './stores/authStore';
+
 export default {
   data() {
     return {
       email: '',
       password: '',
       authStore: useAuthStore(),
+      items: [
+        // Define your menu items here
+        {
+          label: 'Главная страница',
+          icon: 'pi pi-fw pi-home',
+          route: '/',
+          shortcut: 'Ctrl + H',
+          submenu: [
+            // Submenu items
+          ],
+        },
+        {
+          label: 'Категории',
+          icon: 'pi pi-fw pi-folder',
+          route: '/categories',
+        },
+        {
+          label: 'Объявления',
+          icon: 'pi pi-fw pi-box',
+          route: '/items',
+        }
+      ]
     }
   },
   computed: {
