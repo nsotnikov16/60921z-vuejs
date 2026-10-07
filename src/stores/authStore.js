@@ -36,7 +36,7 @@ export const useAuthStore = defineStore('auth', {
       try {
         const response = await axios.get(`${import.meta.env.VITE_APP_BACKEND_API_URL}/user`, {
           headers: {
-            Authorization: `Baerer ${this.token}`,
+            Authorization: `Bearer ${this.token}`,
           },
         })
         this.user = response.data;
